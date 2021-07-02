@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {# ************** SECTION CONTAINER HEADER IMG **************#}
+    {# <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <h1 class="header center">Merci pour votre achat nom produit dynamique</h1>
+                <div class="row center">
+                    <h5 class="header col s12 light">prix dynamique ?</h5>
+                </div>
+            </div>
+        </div>
+        <div class="parallax">
+            <img style="width:100%" src="" alt="Titre de la campagne">
+        </div>
+    </div> #}
+
+    {# ************** SECTION FORM STRIPE **************#}
+    <div class="container">
+        <div class="section">
+            <div class="row">
+                <div class="col s12 center">
+                    <h4>Procéder au paiement</h4>
+                </div>
+            </div>
+            <!--   Form Section   -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                        <h5 class="center">Veuillez remplir tous les champs</h5>
+                        <form method="GET" action="">
+                            <div class="input-field col s12 l6">
+                                <label for="name">Entrez le nom présent sur la carte: </label>
+                                <input type="text" name="name" id="name" required>
+                            </div>
+                            <div class="input-field col s12 l6">
+                             <label for="prix">{{ (order.IdProduct.promoPrice / 100) ~ 0 }} €</label>
+                                <input type="text" name="prix" id="name" disabled="disabled">
+                            </div>
+                            <div class="clearfix"></div>
+                            <h5 class="center">Payez en toute sécurité avec Stripe</h5>
+                            <img style="width:13rem" src="{{ asset('assets/images/paiement-securise-stripe.jpeg') }}">
+                            <div class="input-field col s12">
+                                <label for="email">Email</label>
+                                <input type="email" name="email" id="email" required>
+                            </div>
+                            {# INPUT CACHE PRIX #}
+                            {# <input type="text"> #} 
+                           
+                            <div class="input-field col s12">
+                                {# CARD STRIPE #}
+                                <div id="card-stripe"></div>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <a href="{{ path ('landing_page') }}" class="btn btn-large waves-effect waves-light grey col s12">Annuler</a>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <a href="{{ path('stripe',{'id': order.id}) }}?click" <button class="btn btn-large waves-effect waves-light pink lighten-1 col s12" type="submit" name="action">
+                                    Payer
+                                    <i class="material-icons right">euro_symbol</i>
+                                </button></a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+{% endblock %}
+
+{# SCRIPT STRIPE #}
+{% block javascripts %}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        let stripe = Stripe("pk_test_51J82eiBnNdMIPf3K2k8QamgSs0ZgN8WchTxvzeMvjZ9DLH6iys934e3XIXCABzuRsaylI1fsnWvd5A2vWaTk3SV000TF3qFrnO");
+        // The items the customer wants to buy
+        let elements = stripe.elements();
+
+        let style = {
+            base: {
+                color: "#32325d",
+                fontFamily: 'Arial, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                    color: "#32325d"
+                }
+            },
+            invalid: {
+                fontFamily: 'Arial, sans-serif',
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
+        };
+        console.log(elements);
+
+        let card = elements.create("card", { style: style });
+        // Stripe injects an iframe into the DOM
+        card.mount("#card-stripe");
+    </script>
+
+{% endblock %}
